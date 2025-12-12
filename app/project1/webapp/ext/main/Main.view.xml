@@ -1,0 +1,73 @@
+<mvc:View
+    controllerName="label.conversion.project1.ext.main.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns="sap.m"
+    xmlns:u="sap.ui.unified"
+    xmlns:core="sap.ui.core"
+>
+    <Page id="idMainPage" title="4IoT Label Conversion Request">
+        <content>
+            <l:VerticalLayout id="idMainLayout" width="100%" class="sapUiContentPadding">
+                
+                <Text id="idHeaderText" text="Describe your requirements below to start your conversion project. Your request progress is tracked here:" class="sapUiSmallMarginBottom"/>
+                <ProgressIndicator id="idProgressBar" percentValue="0" displayValue="0%: Start" class="sapUiSmallMarginBottom"/>
+                <Link id="idDetailLink" text="Detailed Explanation" href="#"/> 
+                
+                <Title id="idProjectTitle" text="Project Details" level="H2" class="sapUiMediumMarginTop"/>
+                <f:SimpleForm id="idProjectForm" editable="true" layout="ResponsiveGridLayout">
+                    <f:content>
+                        <Label id="idLabelSoftwareLabel" text="Original Label Software"/>
+                        <ComboBox id="idLabelSoftware" selectedKey="{viewModel>/labelSoftware}">
+                            <items>
+                                <core:Item id="coreItem1" key="bartender" text="Bartender"/>
+                                <core:Item id="coreItem2" key="nicelabel" text="NiceLabel"/>
+                                <core:Item id="coreItem3" key="wsw" text="WSW"/>
+                                <core:Item id="coreItem4" key="others" text="Others"/>
+                            </items>
+                        </ComboBox>
+                        
+                        <Label id="idOtherSoftwareLabel" text="Software Name &amp; Website" visible="{= ${viewModel>/labelSoftware} === 'others' }"/>
+                        <Input id="idOtherSoftware" visible="{= ${viewModel>/labelSoftware} === 'others' }"/>
+                        
+                        <Label id="idNumLabelsLabel" text="Number of Labels to be Converted"/>
+                        <Input id="idNumLabels" type="Number"/>
+                        
+                        <Label id="idContactNameLabel" text="Name"/>
+                        <Input id="idContactName"/>
+                        <Label id="idContactMailLabel" text="Email"/>
+                        <Input id="idContactMail" type="Email"/>
+                        <Label id="idContactPhoneLabel" text="Phone (Optional)"/>
+                        <Input id="idContactPhone" type="Tel"/>
+                    </f:content>
+                </f:SimpleForm>
+
+                <Title id="idServicesTitle" text="Optional Services" level="H2" class="sapUiMediumMarginTop"/>
+                <VBox id="idServicesBox" class="sapUiMediumMarginBottom">
+                    <CheckBox id="idConversionFonts" text="Conversion / Alignment of fonts"/>
+                    <CheckBox id="idConversionFieldnames" text="Conversion / Alignment of fieldnames"/>
+                    <CheckBox id="idComparisonPrintScan" text="Comparison based on print-out + scan"/>
+                    <CheckBox id="idSupportADS" text="Support with SAP print-program / SAP ADS required"/>
+                </VBox>
+                
+                <Title id="idUploadTitle" text="Upload Example Files (Max 5)" level="H2"/>
+                <u:FileUploader
+                    id="idFileUploader"
+                    name="exampleFiles"
+                    uploadUrl="/4iot/conversion/Requests"
+                    maximumFileSize="10"
+                    multiple="true"
+                    sameFilenameAllowed="true"
+                    fileType="pdf,txt,xlsx,doc,xml"
+                    uploadComplete="onUploadComplete"
+                    change="onFileChange"
+                    buttonText="Choose Files"
+                />
+
+                <Button id="idSubmitButton" text="Submit Request" type="Accept" press="onSubmitRequest" class="sapUiMediumMarginTop"/>
+                
+            </l:VerticalLayout>
+        </content>
+    </Page>
+</mvc:View>
