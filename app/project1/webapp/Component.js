@@ -1,26 +1,28 @@
 // app/project1/webapp/Component.js
 sap.ui.define([
-    "sap/fe/core/AppComponent",
+    "sap/ui/core/UIComponent",
     "sap/ui/model/json/JSONModel"
-], function(BaseComponent, JSONModel) {
+], function(UIComponent, JSONModel) {
     "use strict";
 
-    /**
-     * @namespace label.conversion.project1
-     */
-    return BaseComponent.extend("label.conversion.project1.Component", {
+    return UIComponent.extend("label.conversion.project1.Component", {
 
         metadata: {
             manifest: "json"
         },
 
         init: function() {
-            BaseComponent.prototype.init.apply(this, arguments);
+            // Call parent init
+            UIComponent.prototype.init.apply(this, arguments);
             
+            // Initialize viewModel for form controls
             var oViewModel = new JSONModel({
                 labelSoftware: "bartender"
             });
             this.setModel(oViewModel, "viewModel");
+
+            // Initialize router
+            this.getRouter().initialize();
         }
     });
 });

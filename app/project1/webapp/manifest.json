@@ -7,14 +7,8 @@
     "applicationVersion": {
       "version": "0.0.1"
     },
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
-    "resources": "resources.json",
-    "sourceTemplate": {
-      "id": "@sap/generator-fiori:fpm",
-      "version": "1.19.5",
-      "toolsId": "52999cb3-57e4-43dc-8109-0b8a6b584ac0"
-    },
+    "title": "4IoT Label Conversion",
+    "description": "Label Conversion Request Application",
     "dataSources": {
       "mainService": {
         "uri": "/4iot/conversion/",
@@ -28,14 +22,6 @@
   },
   "sap.ui": {
     "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
@@ -43,13 +29,14 @@
     }
   },
   "sap.ui5": {
-    "flexEnabled": true,
+    "flexEnabled": false,
     "dependencies": {
       "minUI5Version": "1.142.1",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.fe.core": {}
+        "sap.ui.layout": {},
+        "sap.ui.unified": {}
       }
     },
     "contentDensities": {
@@ -71,39 +58,59 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
-      },
-      "@i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "uri": "i18n/i18n.properties"
       }
     },
     "resources": {
       "css": []
     },
     "routing": {
-      "config": {},
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "type": "View",
+        "viewType": "XML",
+        "path": "label.conversion.project1.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "transition": "slide",
+        "async": true
+      },
       "routes": [
         {
-          "name": "RequestsMain",
-          "pattern": ":?query:",
-          "target": "RequestsMain"
+          "pattern": "",
+          "name": "home",
+          "target": "home"
+        },
+        {
+          "pattern": "new",
+          "name": "newRequest",
+          "target": "newRequest"
+        },
+        {
+          "pattern": "requests",
+          "name": "myRequests",
+          "target": "myRequests"
         }
       ],
       "targets": {
-        "RequestsMain": {
-          "type": "Component",
-          "id": "RequestsMain",
-          "name": "sap.fe.core.fpm",
-          "options": {
-            "settings": {
-              "navigation": {},
-              "contextPath": "/Requests",
-              "viewName": "label.conversion.project1.ext.main.Main"
-            }
-          }
+        "home": {
+          "id": "home",
+          "name": "Home"
+        },
+        "newRequest": {
+          "id": "newRequest",
+          "name": "NewRequest"
+        },
+        "myRequests": {
+          "id": "myRequests",
+          "name": "MyRequests"
         }
       }
+    },
+    "rootView": {
+      "viewName": "label.conversion.project1.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
     }
-  },
-  "sap.fiori": {}
+  }
 }

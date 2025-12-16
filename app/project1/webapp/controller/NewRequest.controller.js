@@ -1,11 +1,13 @@
+// app/project1/webapp/controller/NewRequest.controller.js
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
+    "sap/m/MessageBox",
     "sap/ui/model/json/JSONModel"
-], function (Controller, MessageToast, JSONModel) {
+], function (Controller, MessageToast, MessageBox, JSONModel) {
     "use strict";
 
-    return Controller.extend("label.conversion.project1.ext.main.Main", {
+    return Controller.extend("label.conversion.project1.controller.NewRequest", {
         
         onInit: function () {
             var oViewModel = this.getOwnerComponent().getModel("viewModel");
@@ -16,7 +18,7 @@ sap.ui.define([
                 this.getView().setModel(oViewModel, "viewModel");
             }
             
-            this.updateProgressBar(0, "0%: Start");
+            this.updateProgressBar(0, "0%: Ready to Submit");
         },
 
         updateProgressBar: function(iPercent, sText) {
@@ -44,19 +46,34 @@ sap.ui.define([
             
             console.log("Files selected:", aFiles.length);
             
+            // File validation
             if (aFiles.length === 0) {
-                MessageToast.show("Please upload at least one example file.");
+                MessageBox.warning("Please upload at least one example file to proceed.");
                 return;
             }
             if (aFiles.length > 5) {
-                MessageToast.show("You can only upload a maximum of 5 example files.");
+                MessageBox.error("Maximum 5 files allowed. You have selected " + aFiles.length + " files. Please remove " + (aFiles.length - 5) + " file(s).");
                 return;
             }
 
+            // Form data validation
             var oFormData = this.collectFormData();
             
             if (!oFormData.contactName || !oFormData.contactMail || !oFormData.numLabels) {
-                MessageToast.show("Please fill in all required fields (Name, Email, Number of Labels).");
+                MessageBox.error("Please fill in all required fields:\n• Full Name\n• Email Address\n• Number of Labels");
+                return;
+            }
+            
+            // Validate "Others" software fields
+            if (oFormData.labelSoftware === 'others' && !oFormData.otherSoftwareName) {
+                MessageBox.error("Please enter the software name when 'Other Software' is selected.");
+                return;
+            }
+            
+            // Email validation
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(oFormData.contactMail)) {
+                MessageBox.error("Please enter a valid email address.");
                 return;
             }
             
@@ -90,29 +107,37 @@ sap.ui.define([
                 
                 if (xhr.status >= 200 && xhr.status < 300) {
                     that.updateProgressBar(50, "50%: Request Submitted Successfully");
-                    MessageToast.show("Your request has been successfully submitted and files uploaded to Azure.");
-                    that.clearForm();
+                    MessageBox.success(
+                        "Your label conversion request has been submitted successfully!\n\n" +
+                        "Our team will review your request and contact you.",
+                        {
+                            title: "Success",
+                            onClose: function() {
+                                // Navigate to My Requests page
+                                that.getOwnerComponent().getRouter().navTo("myRequests");
+                            }
+                        }
+                    );
                 } else {
                     that.updateProgressBar(0, "0%: Submission Failed");
-                    MessageToast.show("Submission failed. Status: " + xhr.status);
+                    MessageBox.error(
+                        "Failed to submit your request. Status: " + xhr.status + "\n\n" +
+                        "Please try again or contact support if the problem persists.",
+                        {
+                            title: "Upload Failed"
+                        }
+                    );
                     console.error("Upload error:", xhr.responseText);
                 }
             });
             
             xhr.addEventListener("error", function() {
                 that.updateProgressBar(0, "0%: Submission Failed");
-                MessageToast.show("Network error occurred during upload.");
-                console.error("XHR error");
+                MessageBox.error("Network error occurred during upload. Please check your connection and try again.");
             });
             
-            // IMPORTANT: Use /upload endpoint instead of /Requests
             xhr.open("POST", "/upload");
-            
-            // Add form data as custom header
             xhr.setRequestHeader("slug", JSON.stringify(oFormData));
-            
-            // Don't set Content-Type - browser will set it automatically with boundary
-            
             xhr.send(formData);
         },
 
@@ -120,9 +145,19 @@ sap.ui.define([
             var oViewModel = this.getView().getModel("viewModel");
             var sLabelSoftware = oViewModel.getProperty("/labelSoftware");
             
+            // Collect software name and website separately
+            var sSoftwareName = null;
+            var sSoftwareWebsite = null;
+            
+            if (sLabelSoftware === 'others') {
+                sSoftwareName = this.byId("idOtherSoftwareName").getValue();
+                sSoftwareWebsite = this.byId("idOtherSoftwareWebsite").getValue();
+            }
+            
             return {
                 labelSoftware: sLabelSoftware,
-                otherSoftware: sLabelSoftware === 'others' ? this.byId("idOtherSoftware").getValue() : null,
+                otherSoftwareName: sSoftwareName,
+                otherSoftwareWebsite: sSoftwareWebsite,
                 numLabels: parseInt(this.byId("idNumLabels").getValue(), 10) || 0,
                 contactName: this.byId("idContactName").getValue(),
                 contactMail: this.byId("idContactMail").getValue(),
@@ -138,6 +173,7 @@ sap.ui.define([
             var oUploader = this.byId("idFileUploader");
             var oFileUpload = oUploader.oFileUpload;
             var aFiles = [];
+            var oWarning = this.byId("idFileWarning");
             
             if (oFileUpload && oFileUpload.files) {
                 aFiles = Array.from(oFileUpload.files);
@@ -145,28 +181,39 @@ sap.ui.define([
             
             console.log("Files changed. Count:", aFiles.length);
             
-            if (aFiles.length > 0) {
+            // Show warning immediately if more than 5 files
+            if (aFiles.length > 5) {
+                oWarning.setText("Too many files selected! Maximum 5 files allowed.");
+                //You have selected " + aFiles.length + " files. Please remove " + (aFiles.length - 5) + " file(s) before submitting
+                oWarning.setVisible(true);
+                MessageToast.show("Warning: Maximum 5 files allowed!");
+            } else if (aFiles.length > 0) {
+                oWarning.setVisible(false);
                 MessageToast.show(aFiles.length + " file(s) selected");
+            } else {
+                oWarning.setVisible(false);
             }
             
-            this.updateProgressBar(0, "0%: Start");
+            this.updateProgressBar(0, "0%: Ready to Submit");
         },
-        
-        clearForm: function() {
-            var oViewModel = this.getView().getModel("viewModel");
-            oViewModel.setProperty("/labelSoftware", "bartender");
-            
-            this.byId("idOtherSoftware").setValue("");
-            this.byId("idNumLabels").setValue("");
-            this.byId("idContactName").setValue("");
-            this.byId("idContactMail").setValue("");
-            this.byId("idContactPhone").setValue("");
-            this.byId("idConversionFonts").setSelected(false);
-            this.byId("idConversionFieldnames").setSelected(false);
-            this.byId("idComparisonPrintScan").setSelected(false);
-            this.byId("idSupportADS").setSelected(false);
-            this.byId("idFileUploader").clear();
-            this.updateProgressBar(0, "0%: Start");
+
+        onNavBack: function() {
+            this.getOwnerComponent().getRouter().navTo("home");
+        },
+
+        onCancel: function() {
+            var that = this;
+            MessageBox.confirm(
+                "Are you sure you want to cancel? All entered data will be lost.",
+                {
+                    title: "Confirm Cancel",
+                    onClose: function(oAction) {
+                        if (oAction === MessageBox.Action.OK) {
+                            that.getOwnerComponent().getRouter().navTo("home");
+                        }
+                    }
+                }
+            );
         }
     });
 });

@@ -1,0 +1,10 @@
+<!-- app/project1/webapp/view/App.view.xml -->
+<mvc:View
+    controllerName="label.conversion.project1.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    displayBlock="true"
+    height="100%"
+>
+    <App id="app" />
+</mvc:View>

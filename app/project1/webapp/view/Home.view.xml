@@ -1,0 +1,154 @@
+<!-- app/project1/webapp/view/Home.view.xml -->
+<mvc:View
+    controllerName="label.conversion.project1.controller.Home"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    height="100%"
+    displayBlock="true"
+>
+    <Page
+        id="idHomePage"
+        title="4IoT Label Conversion Portal"
+        showHeader="true"
+        enableScrolling="true"
+        class="sapUiResponsiveContentPadding"
+    >
+        <content>
+            <l:VerticalLayout 
+                width="100%" 
+                class="sapUiContentPadding"
+            >
+                <!-- Hero Section -->
+                <l:BlockLayout id="idHeroBlock" background="Dashboard">
+                    <l:BlockLayoutRow>
+                        <l:BlockLayoutCell>
+                            <VBox 
+                                alignItems="Center" 
+                                justifyContent="Center"
+                                class="sapUiLargeMarginTopBottom"
+                            >
+                                <Image
+                                    src="sap-icon://document-text"
+                                    width="80px"
+                                    class="sapUiMediumMarginBottom"
+                                />
+                                <Title 
+                                    text="Welcome to Label Conversion Services"
+                                    level="H1"
+                                    class="sapUiSmallMarginBottom"
+                                />
+                                <Text 
+                                    text="Convert your labels to SAP-compatible formats with ease"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                            </VBox>
+                        </l:BlockLayoutCell>
+                    </l:BlockLayoutRow>
+                </l:BlockLayout>
+
+                <!-- Main Options Cards -->
+                <l:Grid 
+                    defaultSpan="XL6 L6 M12 S12"
+                    width="auto"
+                    class="sapUiMediumMarginTop"
+                >
+                    <!-- Card 1: Create New Request -->
+                    <l:content>
+                        <GenericTile
+                            id="idNewRequestTile"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Create New Request"
+                            subheader="Submit labels for conversion"
+                            press="onNavigateToNewRequest"
+                        >
+                            <TileContent>
+                                <ImageContent
+                                    src="sap-icon://add-document"
+                                />
+                            </TileContent>
+                            <layoutData>
+                                <l:GridData span="XL6 L6 M12 S12" />
+                            </layoutData>
+                        </GenericTile>
+                    </l:content>
+
+                    <!-- Card 2: Check Existing Requests -->
+                    <l:content>
+                        <GenericTile
+                            id="idExistingRequestTile"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="My Requests"
+                            subheader="View and track your requests"
+                            press="onNavigateToMyRequests"
+                        >
+                            <TileContent>
+                                <ImageContent
+                                    src="sap-icon://documents"
+                                />
+                            </TileContent>
+                            <layoutData>
+                                <l:GridData span="XL6 L6 M12 S12" />
+                            </layoutData>
+                        </GenericTile>
+                    </l:content>
+                </l:Grid>
+
+                <!-- Info Section -->
+                <VBox class="sapUiLargeMarginTop">
+                    <Title text="How It Works" level="H2" class="sapUiMediumMarginBottom"/>
+                    
+                    <HBox class="sapUiSmallMarginBottom">
+                        <core:Icon 
+                            src="sap-icon://upload" 
+                            size="2rem"
+                            color="#0854A0"
+                            class="sapUiSmallMarginEnd"
+                            xmlns:core="sap.ui.core"
+                        />
+                        <VBox>
+                            <Title text="1. Upload Your Labels" level="H4" />
+                            <Text text="Submit your existing label files (BarTender, NiceLabel, WSW, etc.)" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox class="sapUiSmallMarginBottom">
+                        <core:Icon 
+                            src="sap-icon://process" 
+                            size="2rem"
+                            color="#0854A0"
+                            class="sapUiSmallMarginEnd"
+                            xmlns:core="sap.ui.core"
+                        />
+                        <VBox>
+                            <Title text="2. We Convert" level="H4" />
+                            <Text text="Our team processes and converts your labels to SAP-compatible formats" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox class="sapUiSmallMarginBottom">
+                        <core:Icon 
+                            src="sap-icon://download" 
+                            size="2rem"
+                            color="#0854A0"
+                            class="sapUiSmallMarginEnd"
+                            xmlns:core="sap.ui.core"
+                        />
+                        <VBox>
+                            <Title text="3. Download Results" level="H4" />
+                            <Text text="Get your converted labels ready for use in your SAP system" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+            </l:VerticalLayout>
+        </content>
+
+        <!-- <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Label text="© 2025 4IoT Solutions • Label Conversion Services" />
+            </OverflowToolbar>
+        </footer> -->
+    </Page>
+</mvc:View>
