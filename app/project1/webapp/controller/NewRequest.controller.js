@@ -1,4 +1,3 @@
-// app/project1/webapp/controller/NewRequest.controller.js
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
@@ -18,7 +17,58 @@ sap.ui.define([
                 this.getView().setModel(oViewModel, "viewModel");
             }
             
+            var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("newRequest").attachPatternMatched(this.onRouteMatched, this);
+            
             this.updateProgressBar(0, "0%: Ready to Submit");
+        },
+
+        onRouteMatched: function () {
+            var oSessionModel = this.getOwnerComponent().getModel("session");
+            var sEmail = oSessionModel.getProperty("/userEmail");
+            
+            if (!sEmail) {
+                MessageBox.warning("Please enter your email on the home page first.", {
+                    onClose: function () {
+                        this.getOwnerComponent().getRouter().navTo("home");
+                    }.bind(this)
+                });
+                return;
+            }
+            this.clearForm();
+
+            this.byId("idContactMail").setValue(sEmail);
+            this.byId("idContactMail").setEditable(false);
+            
+            this.updateProgressBar(0, "0%: Ready to Submit");
+        },
+
+        clearForm: function() {
+            var oViewModel = this.getView().getModel("viewModel");
+            oViewModel.setProperty("/labelSoftware", "bartender");
+            
+            this.byId("idOtherSoftwareName") && this.byId("idOtherSoftwareName").setValue("");
+            this.byId("idOtherSoftwareWebsite") && this.byId("idOtherSoftwareWebsite").setValue("");
+            this.byId("idNumLabels").setValue("1");
+            this.byId("idContactName").setValue("");
+            this.byId("idContactMail").setValue("");
+            this.byId("idContactPhone").setValue("");
+            
+            this.byId("idConversionFonts").setSelected(false);
+            this.byId("idConversionFieldnames").setSelected(false);
+            this.byId("idComparisonPrintScan").setSelected(false);
+            this.byId("idSupportADS").setSelected(false);
+            
+            var oUploader = this.byId("idFileUploader");
+            if (oUploader && oUploader.oFileUpload) {
+                oUploader.clear();
+                oUploader.oFileUpload.value = "";
+            }
+            
+            var oWarning = this.byId("idFileWarning");
+            if (oWarning) {
+                oWarning.setVisible(false);
+            }
         },
 
         updateProgressBar: function(iPercent, sText) {
@@ -30,6 +80,7 @@ sap.ui.define([
         },
 
         onSubmitRequest: function () {
+            var that = this;
             var oUploader = this.byId("idFileUploader");
             
             if (!oUploader) {
@@ -43,10 +94,6 @@ sap.ui.define([
             if (oFileUpload && oFileUpload.files) {
                 aFiles = Array.from(oFileUpload.files);
             }
-            
-            console.log("Files selected:", aFiles.length);
-            
-            // File validation
             if (aFiles.length === 0) {
                 MessageBox.warning("Please upload at least one example file to proceed.");
                 return;
@@ -56,7 +103,6 @@ sap.ui.define([
                 return;
             }
 
-            // Form data validation
             var oFormData = this.collectFormData();
             
             if (!oFormData.contactName || !oFormData.contactMail || !oFormData.numLabels) {
@@ -64,22 +110,55 @@ sap.ui.define([
                 return;
             }
             
-            // Validate "Others" software fields
             if (oFormData.labelSoftware === 'others' && !oFormData.otherSoftwareName) {
                 MessageBox.error("Please enter the software name when 'Other Software' is selected.");
                 return;
             }
             
-            // Email validation
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(oFormData.contactMail)) {
                 MessageBox.error("Please enter a valid email address.");
                 return;
             }
             
-            console.log("Form data collected:", oFormData);
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/4iot/conversion/Requests?$filter=contactMail eq '" + encodeURIComponent(oFormData.contactMail) + "'");
             
-            this.uploadFilesWithXHR(aFiles, oFormData);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {
+                        var oData = JSON.parse(xhr.responseText);
+                        var aResults = oData.value || [];
+                        
+                        if (aResults.length > 0) {
+                            MessageBox.error(
+                                "A request already exists for this email address.\n\n" +
+                                "Request ID: " + aResults[0].ID + "\n\n" +
+                                "You will be redirected to view your existing request.",
+                                {
+                                    title: "Duplicate Request",
+                                    onClose: function () {
+                                        that.getOwnerComponent().getRouter().navTo("myRequests");
+                                    }
+                                }
+                            );
+                        } else {
+                            that.uploadFilesWithXHR(aFiles, oFormData);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing response:", e);
+                        MessageBox.error("Failed to verify email. Please try again.");
+                    }
+                } else {
+                    MessageBox.error("Failed to verify email. Please try again.");
+                }
+            };
+            
+            xhr.onerror = function() {
+                MessageBox.error("Network error. Please try again.");
+            };
+            
+            xhr.send();
         },
 
         uploadFilesWithXHR: function(aFiles, oFormData) {
@@ -108,16 +187,31 @@ sap.ui.define([
                 if (xhr.status >= 200 && xhr.status < 300) {
                     that.updateProgressBar(50, "50%: Request Submitted Successfully");
                     MessageBox.success(
-                        "Your label conversion request has been submitted successfully!\n\n" +
-                        "Our team will review your request and contact you.",
+                        "Your label conversion request has been submitted successfully!",
                         {
                             title: "Success",
                             onClose: function() {
-                                // Navigate to My Requests page
                                 that.getOwnerComponent().getRouter().navTo("myRequests");
                             }
                         }
                     );
+                } else if (xhr.status === 409) {
+                    that.updateProgressBar(0, "0%: Duplicate Request");
+                    try {
+                        var errorData = JSON.parse(xhr.responseText);
+                        MessageBox.error(
+                            "A request already exists for this email.\n\n" +
+                            "Request ID: " + errorData.existingRequestId,
+                            {
+                                title: "Duplicate Request",
+                                onClose: function() {
+                                    that.getOwnerComponent().getRouter().navTo("myRequests");
+                                }
+                            }
+                        );
+                    } catch (e) {
+                        MessageBox.error("A request already exists for this email.");
+                    }
                 } else {
                     that.updateProgressBar(0, "0%: Submission Failed");
                     MessageBox.error(
@@ -145,7 +239,6 @@ sap.ui.define([
             var oViewModel = this.getView().getModel("viewModel");
             var sLabelSoftware = oViewModel.getProperty("/labelSoftware");
             
-            // Collect software name and website separately
             var sSoftwareName = null;
             var sSoftwareWebsite = null;
             
@@ -181,10 +274,8 @@ sap.ui.define([
             
             console.log("Files changed. Count:", aFiles.length);
             
-            // Show warning immediately if more than 5 files
             if (aFiles.length > 5) {
-                oWarning.setText("Too many files selected! Maximum 5 files allowed.");
-                //You have selected " + aFiles.length + " files. Please remove " + (aFiles.length - 5) + " file(s) before submitting
+                oWarning.setText("Too many files selected! Maximum 5 files allowed. You have selected " + aFiles.length + " files. Please remove " + (aFiles.length - 5) + " file(s) before submitting.");
                 oWarning.setVisible(true);
                 MessageToast.show("Warning: Maximum 5 files allowed!");
             } else if (aFiles.length > 0) {

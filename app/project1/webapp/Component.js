@@ -1,4 +1,3 @@
-// app/project1/webapp/Component.js
 sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/ui/model/json/JSONModel"
@@ -12,16 +11,18 @@ sap.ui.define([
         },
 
         init: function() {
-            // Call parent init
             UIComponent.prototype.init.apply(this, arguments);
             
-            // Initialize viewModel for form controls
             var oViewModel = new JSONModel({
                 labelSoftware: "bartender"
             });
             this.setModel(oViewModel, "viewModel");
 
-            // Initialize router
+            var oSessionModel = new JSONModel({
+                userEmail: ""
+            });
+            this.setModel(oSessionModel, "session");
+
             this.getRouter().initialize();
         }
     });

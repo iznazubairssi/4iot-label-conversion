@@ -1,9 +1,10 @@
-<!-- app/project1/webapp/view/Home.view.xml -->
 <mvc:View
     controllerName="label.conversion.project1.controller.Home"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
     height="100%"
     displayBlock="true"
 >
@@ -11,7 +12,6 @@
         id="idHomePage"
         title="4IoT Label Conversion Portal"
         showHeader="true"
-        enableScrolling="true"
         class="sapUiResponsiveContentPadding"
     >
         <content>
@@ -19,136 +19,162 @@
                 width="100%" 
                 class="sapUiContentPadding"
             >
-                <!-- Hero Section -->
-                <l:BlockLayout id="idHeroBlock" background="Dashboard">
-                    <l:BlockLayoutRow>
-                        <l:BlockLayoutCell>
-                            <VBox 
-                                alignItems="Center" 
+                <VBox 
+                    alignItems="Center" 
+                    justifyContent="Center"
+                    class="sapUiLargeMarginTopBottom"
+                >
+                    <core:Icon 
+                        src="sap-icon://document-text" 
+                        size="5rem"
+                        color="#0854A0"
+                        class="sapUiMediumMarginBottom"
+                    />
+                    <Title 
+                        text="Welcome to Label Conversion Services"
+                        level="H1"
+                        class="sapUiSmallMarginBottom"
+                        textAlign="Center"
+                    />
+                </VBox>
+                <f:Card 
+                    id="idEmailCard"
+                    class="sapUiMediumMarginTop"
+                    width="100%"
+                >
+                    <f:header>
+                        <card:Header
+                            xmlns:card="sap.f.cards"
+                            title="Get Started"
+                            subtitle="Enter your email to continue"
+                        />
+                    </f:header>
+                    <f:content>
+                        <VBox class="sapUiMediumMargin" alignItems="Center">
+                            <MessageStrip
+                                id="idEmailInfo"
+                                text="Enter your email address to check your request status or create a new conversion request."
+                                type="Information"
+                                showIcon="true"
+                                class="sapUiSmallMarginBottom"
+                            />
+                            
+                            <HBox 
+                                width="100%" 
+                                alignItems="Center"
                                 justifyContent="Center"
-                                class="sapUiLargeMarginTopBottom"
+                                class="sapUiMediumMarginTop"
                             >
-                                <Image
-                                    src="sap-icon://document-text"
-                                    width="80px"
-                                    class="sapUiMediumMarginBottom"
+                                <Input
+                                    id="idEmailInput"
+                                    type="Email"
+                                    placeholder="Enter your email address"
+                                    width="400px"
+                                    value="{/userEmail}"
+                                    submit="onCheckEmail"
+                                    class="sapUiSmallMarginEnd"
                                 />
-                                <Title 
-                                    text="Welcome to Label Conversion Services"
-                                    level="H1"
-                                    class="sapUiSmallMarginBottom"
+                                <Button
+                                    id="idContinueButton"
+                                    text="Continue"
+                                    type="Emphasized"
+                                    icon="sap-icon://arrow-right"
+                                    press="onCheckEmail"
                                 />
-                                <Text 
-                                    text="Convert your labels to SAP-compatible formats with ease"
-                                    class="sapUiTinyMarginBottom"
-                                />
-                            </VBox>
-                        </l:BlockLayoutCell>
-                    </l:BlockLayoutRow>
-                </l:BlockLayout>
+                            </HBox>
 
-                <!-- Main Options Cards -->
-                <l:Grid 
-                    defaultSpan="XL6 L6 M12 S12"
-                    width="auto"
+                            <BusyIndicator
+                                id="idBusyIndicator"
+                                visible="false"
+                                class="sapUiMediumMarginTop"
+                            />
+                        </VBox>
+                    </f:content>
+                </f:Card>
+
+                <Panel
+                    id="idInfoPanel"
+                    headerText="How It Works"
+                    expandable="true"
+                    expanded="false"
                     class="sapUiMediumMarginTop"
                 >
-                    <!-- Card 1: Create New Request -->
-                    <l:content>
-                        <GenericTile
-                            id="idNewRequestTile"
-                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                            header="Create New Request"
-                            subheader="Submit labels for conversion"
-                            press="onNavigateToNewRequest"
+                    <content>
+                        <l:Grid 
+                            defaultSpan="L4 M6 S12"
+                            class="sapUiSmallMargin"
                         >
-                            <TileContent>
-                                <ImageContent
-                                    src="sap-icon://add-document"
-                                />
-                            </TileContent>
-                            <layoutData>
-                                <l:GridData span="XL6 L6 M12 S12" />
-                            </layoutData>
-                        </GenericTile>
-                    </l:content>
-
-                    <!-- Card 2: Check Existing Requests -->
-                    <l:content>
-                        <GenericTile
-                            id="idExistingRequestTile"
-                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                            header="My Requests"
-                            subheader="View and track your requests"
-                            press="onNavigateToMyRequests"
-                        >
-                            <TileContent>
-                                <ImageContent
-                                    src="sap-icon://documents"
-                                />
-                            </TileContent>
-                            <layoutData>
-                                <l:GridData span="XL6 L6 M12 S12" />
-                            </layoutData>
-                        </GenericTile>
-                    </l:content>
-                </l:Grid>
-
-                <!-- Info Section -->
-                <VBox class="sapUiLargeMarginTop">
-                    <Title text="How It Works" level="H2" class="sapUiMediumMarginBottom"/>
-                    
-                    <HBox class="sapUiSmallMarginBottom">
-                        <core:Icon 
-                            src="sap-icon://upload" 
-                            size="2rem"
-                            color="#0854A0"
-                            class="sapUiSmallMarginEnd"
-                            xmlns:core="sap.ui.core"
-                        />
-                        <VBox>
-                            <Title text="1. Upload Your Labels" level="H4" />
-                            <Text text="Submit your existing label files (BarTender, NiceLabel, WSW, etc.)" />
-                        </VBox>
-                    </HBox>
-
-                    <HBox class="sapUiSmallMarginBottom">
-                        <core:Icon 
-                            src="sap-icon://process" 
-                            size="2rem"
-                            color="#0854A0"
-                            class="sapUiSmallMarginEnd"
-                            xmlns:core="sap.ui.core"
-                        />
-                        <VBox>
-                            <Title text="2. We Convert" level="H4" />
-                            <Text text="Our team processes and converts your labels to SAP-compatible formats" />
-                        </VBox>
-                    </HBox>
-
-                    <HBox class="sapUiSmallMarginBottom">
-                        <core:Icon 
-                            src="sap-icon://download" 
-                            size="2rem"
-                            color="#0854A0"
-                            class="sapUiSmallMarginEnd"
-                            xmlns:core="sap.ui.core"
-                        />
-                        <VBox>
-                            <Title text="3. Download Results" level="H4" />
-                            <Text text="Get your converted labels ready for use in your SAP system" />
-                        </VBox>
-                    </HBox>
-                </VBox>
-
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://email" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="1. Enter Email" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Provide your email to track your request"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                            
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://upload" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="2. Upload Labels" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Submit your label files for conversion"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                            
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://process" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="3. We Convert" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Our team processes your labels"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                            
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://download" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="4. Download Results" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Get your converted labels"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                        </l:Grid>
+                    </content>
+                </Panel>
             </l:VerticalLayout>
         </content>
-
-        <!-- <footer>
-            <OverflowToolbar>
-                <ToolbarSpacer />
-                <Label text="© 2025 4IoT Solutions • Label Conversion Services" />
-            </OverflowToolbar>
-        </footer> -->
     </Page>
 </mvc:View>

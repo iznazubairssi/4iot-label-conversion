@@ -1,4 +1,3 @@
-const cds = require('@sap/cds');
 const { containerClient } = require('./lib/azure-connector');
 
 module.exports = async function (srv) {

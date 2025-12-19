@@ -1,4 +1,3 @@
-<!-- app/project1/webapp/view/App.view.xml -->
 <mvc:View
     controllerName="label.conversion.project1.controller.App"
     xmlns:mvc="sap.ui.core.mvc"
