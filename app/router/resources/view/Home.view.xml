@@ -1,0 +1,180 @@
+<mvc:View
+    controllerName="label.conversion.project1.controller.Home"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    height="100%"
+    displayBlock="true"
+>
+    <Page
+        id="idHomePage"
+        title="4IoT Label Conversion Portal"
+        showHeader="true"
+        class="sapUiResponsiveContentPadding"
+    >
+        <content>
+            <l:VerticalLayout 
+                width="100%" 
+                class="sapUiContentPadding"
+            >
+                <VBox 
+                    alignItems="Center" 
+                    justifyContent="Center"
+                    class="sapUiLargeMarginTopBottom"
+                >
+                    <core:Icon 
+                        src="sap-icon://document-text" 
+                        size="5rem"
+                        color="#0854A0"
+                        class="sapUiMediumMarginBottom"
+                    />
+                    <Title 
+                        text="Welcome to Label Conversion Services"
+                        level="H1"
+                        class="sapUiSmallMarginBottom"
+                        textAlign="Center"
+                    />
+                </VBox>
+                <f:Card 
+                    id="idEmailCard"
+                    class="sapUiMediumMarginTop"
+                    width="100%"
+                >
+                    <f:header>
+                        <card:Header
+                            xmlns:card="sap.f.cards"
+                            title="Get Started"
+                            subtitle="Enter your email to continue"
+                        />
+                    </f:header>
+                    <f:content>
+                        <VBox class="sapUiMediumMargin" alignItems="Center">
+                            <MessageStrip
+                                id="idEmailInfo"
+                                text="Enter your email address to check your request status or create a new conversion request."
+                                type="Information"
+                                showIcon="true"
+                                class="sapUiSmallMarginBottom"
+                            />
+                            
+                            <HBox 
+                                width="100%" 
+                                alignItems="Center"
+                                justifyContent="Center"
+                                class="sapUiMediumMarginTop"
+                            >
+                                <Input
+                                    id="idEmailInput"
+                                    type="Email"
+                                    placeholder="Enter your email address"
+                                    width="400px"
+                                    value="{/userEmail}"
+                                    submit="onCheckEmail"
+                                    class="sapUiSmallMarginEnd"
+                                />
+                                <Button
+                                    id="idContinueButton"
+                                    text="Continue"
+                                    type="Emphasized"
+                                    icon="sap-icon://arrow-right"
+                                    press="onCheckEmail"
+                                />
+                            </HBox>
+
+                            <BusyIndicator
+                                id="idBusyIndicator"
+                                visible="false"
+                                class="sapUiMediumMarginTop"
+                            />
+                        </VBox>
+                    </f:content>
+                </f:Card>
+
+                <Panel
+                    id="idInfoPanel"
+                    headerText="How It Works"
+                    expandable="true"
+                    expanded="false"
+                    class="sapUiMediumMarginTop"
+                >
+                    <content>
+                        <l:Grid 
+                            defaultSpan="L4 M6 S12"
+                            class="sapUiSmallMargin"
+                        >
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://email" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="1. Enter Email" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Provide your email to track your request"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                            
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://upload" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="2. Upload Labels" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Submit your label files for conversion"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                            
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://process" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="3. We Convert" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Our team processes your labels"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                            
+                            <l:content>
+                                <VBox class="sapUiSmallMargin" alignItems="Center">
+                                    <core:Icon 
+                                        src="sap-icon://download" 
+                                        size="3rem"
+                                        color="#0854A0"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    <Title text="4. Download Results" level="H4" textAlign="Center"/>
+                                    <Text 
+                                        text="Get your converted labels"
+                                        textAlign="Center"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </l:content>
+                        </l:Grid>
+                    </content>
+                </Panel>
+            </l:VerticalLayout>
+        </content>
+    </Page>
+</mvc:View>

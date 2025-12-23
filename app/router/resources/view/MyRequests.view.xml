@@ -1,0 +1,253 @@
+<mvc:View
+    controllerName="label.conversion.project1.controller.MyRequests"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    height="100%"
+>
+    <Page
+        id="idMyRequestsPage"
+        title="My Conversion Request"
+        showNavButton="true"
+        navButtonPress="onNavBack"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                
+                <Toolbar>
+                    <Title text="Request Details" level="H2"/>
+                    <ToolbarSpacer />
+                    <Button
+                        text="Refresh"
+                        icon="sap-icon://refresh"
+                        press="onRefresh"
+                        type="Transparent"
+                    />
+                </Toolbar>
+
+                <f:Card class="sapUiSmallMarginTop" width="100%">
+                    <f:header>
+                        <card:Header
+                            xmlns:card="sap.f.cards"
+                            title="Request Summary"
+                            subtitle="{requestsModel>/selectedRequest/ID}"
+                        />
+                    </f:header>
+                    <f:content>
+                        <VBox class="sapUiSmallMargin">
+                            <l:Grid 
+                                defaultSpan="XL3 L3 M6 S12"
+                                hSpacing="2"
+                                vSpacing="1"
+                            >
+                                <l:content>
+                                    <VBox class="sapUiSmallMargin">
+                                        <Label text="Status" class="sapUiTinyMarginBottom"/>
+                                        <ObjectStatus 
+                                            text="{
+                                                path: 'requestsModel>/selectedRequest/status',
+                                                formatter: '.formatStatus'
+                                            }"
+                                            state="{
+                                                path: 'requestsModel>/selectedRequest/status',
+                                                formatter: '.formatStatusState'
+                                            }"
+                                            icon="{
+                                                path: 'requestsModel>/selectedRequest/status',
+                                                formatter: '.formatStatusIcon'
+                                            }"
+                                        />
+                                    </VBox>
+                                </l:content>
+                                
+                                <l:content>
+                                    <VBox class="sapUiSmallMargin">
+                                        <Label text="Submitted" class="sapUiTinyMarginBottom"/>
+                                        <Text text="{
+                                            path: 'requestsModel>/selectedRequest/createdAt',
+                                            formatter: '.formatDate'
+                                        }" />
+                                    </VBox>
+                                </l:content>
+                                
+                                <l:content>
+                                    <VBox class="sapUiSmallMargin">
+                                        <Label text="Contact" class="sapUiTinyMarginBottom"/>
+                                        <Text text="{requestsModel>/selectedRequest/contactName}" />
+                                        <Text 
+                                            text="{requestsModel>/selectedRequest/contactMail}" 
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                    </VBox>
+                                </l:content>
+                                
+                                <l:content>
+                                    <VBox class="sapUiSmallMargin">
+                                        <Label text="Labels" class="sapUiTinyMarginBottom"/>
+                                        <ObjectNumber 
+                                            number="{requestsModel>/selectedRequest/numLabels}"
+                                        
+                                        />
+                                    </VBox>
+                                </l:content>
+                            </l:Grid>
+                            
+                            <VBox class="sapUiMediumMarginTop">
+                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <Label text="Progress" />
+                                </HBox>
+                                <ProgressIndicator
+                                    percentValue="{requestsModel>/selectedRequest/status}"
+                                    displayValue="{requestsModel>/selectedRequest/status}%: {
+                                        path: 'requestsModel>/selectedRequest/status',
+                                        formatter: '.formatStatus'
+                                    }"
+                                    showValue="true"
+                                    state="{
+                                        path: 'requestsModel>/selectedRequest/status',
+                                        formatter: '.formatStatusState'
+                                    }"
+                                    width="100%"
+                                />
+                            </VBox>
+                        </VBox>
+                    </f:content>
+                </f:Card>
+
+                <Panel
+                    id="idUploadedFilesPanel"
+                    headerText="Uploaded Files ({requestsModel>/uploadedFiles/length})"
+                    expandable="true"
+                    expanded="true"
+                    class="sapUiSmallMarginTop"
+                    visible="{requestsModel>/showDetails}"
+                >
+                    <content>
+                        <List
+                            id="idUploadedFilesList"
+                            items="{requestsModel>/uploadedFiles}"
+                            noDataText="No files uploaded yet"
+                            mode="None"
+                        >
+                            <items>
+                                <StandardListItem
+                                    title="{requestsModel>name}"
+                                    description="Size: {
+                                        path: 'requestsModel>size',
+                                        formatter: '.formatFileSize'
+                                    }"
+                                    icon="sap-icon://document"
+                                    iconInset="false"
+                                />
+                            </items>
+                        </List>
+                    </content>
+                </Panel>
+
+                <Panel
+                    id="idConvertedFilesPanel"
+                    headerText="Converted Files ({requestsModel>/convertedFiles/length})"
+                    expandable="true"
+                    expanded="true"
+                    class="sapUiSmallMarginTop"
+                    visible="{requestsModel>/showDetails}"
+                >
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Converted Files ({requestsModel>/convertedFiles/length})" />
+                            <ToolbarSpacer />
+                            <Button
+                                text="Download All"
+                                icon="sap-icon://download"
+                                type="Emphasized"
+                                press="onDownloadAllConverted"
+                                visible="{= ${requestsModel>/convertedFiles/length} > 0 }"
+                            />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <MessageStrip
+                                visible="{= ${requestsModel>/convertedFiles/length} === 0 }"
+                                text="No converted files available yet. Your files are being processed by our team."
+                                type="Information"
+                                showIcon="true"
+                            />
+                            
+                            <List
+                                id="idConvertedFilesList"
+                                items="{requestsModel>/convertedFiles}"
+                                visible="{= ${requestsModel>/convertedFiles/length} > 0 }"
+                                mode="None"
+                            >
+                                <items>
+                                    <CustomListItem>
+                                        <content>
+                                            <HBox 
+                                                width="100%" 
+                                                justifyContent="SpaceBetween"
+                                                alignItems="Center"
+                                                class="sapUiSmallMarginTopBottom"
+                                            >
+                                                <VBox width="70%">
+                                                    <HBox alignItems="Center">
+                                                        <core:Icon 
+                                                            src="sap-icon://document" 
+                                                            size="2rem"
+                                                            color="#0854A0"
+                                                            class="sapUiSmallMarginEnd"
+                                                        />
+                                                        <VBox>
+                                                            <Text 
+                                                                text="{requestsModel>name}" 
+                                                                class="sapMTitle"
+                                                            />
+                                                            <Text 
+                                                                text="Size: {
+                                                                    path: 'requestsModel>size',
+                                                                    formatter: '.formatFileSize'
+                                                                } • Last Modified: {
+                                                                    path: 'requestsModel>lastModified',
+                                                                    formatter: '.formatDate'
+                                                                }"
+                                                                class="sapUiTinyMarginTop"
+                                                            />
+                                                        </VBox>
+                                                    </HBox>
+                                                </VBox>
+                                                <Button
+                                                    text="Download"
+                                                    icon="sap-icon://download"
+                                                    type="Emphasized"
+                                                    press="onDownloadFile"
+                                                />
+                                            </HBox>
+                                        </content>
+                                    </CustomListItem>
+                                </items>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- <MessageStrip
+                    type="Information"
+                    showIcon="true"
+                    class="sapUiSmallMarginTop"
+                    visible="{= ${requestsModel>/selectedRequest/status} === 50 }"
+                /> -->
+                
+                <MessageStrip
+                    text="Your conversion is complete! Download your files above."
+                    type="Success"
+                    showIcon="true"
+                    class="sapUiSmallMarginTop"
+                    visible="{= ${requestsModel>/selectedRequest/status} === 100 }"
+                />
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

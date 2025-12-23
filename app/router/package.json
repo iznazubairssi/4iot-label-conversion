@@ -1,7 +1,12 @@
 {
-  "name": "approuter",
+  "name": "label-conversion-approuter",
+  "version": "1.0.0",
+  "description": "Application Router for Label Conversion",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
-    "@sap/approuter": "^20.0.0"
+    "@sap/approuter": "^14"
   },
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js"

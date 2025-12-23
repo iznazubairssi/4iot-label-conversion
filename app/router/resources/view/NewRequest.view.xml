@@ -1,0 +1,224 @@
+<mvc:View
+    controllerName="label.conversion.project1.controller.NewRequest"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns="sap.m"
+    xmlns:u="sap.ui.unified"
+    xmlns:core="sap.ui.core"
+>
+    <Page 
+        id="idMainPage" 
+        title="Create New Conversion Request"
+        showNavButton="true"
+        navButtonPress="onNavBack"
+        showHeader="true"
+        enableScrolling="true"
+        class="sapUiResponsiveContentPadding"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                
+                <MessageStrip
+                    id="idInfoStrip"
+                    text="Submit your label conversion requirements below. Our team will process your request and contact you."
+                    type="Information"
+                    showIcon="true"
+                    class="sapUiSmallMarginBottom"
+                />
+                
+                <Panel
+                    id="idProgressPanel"
+                    headerText="Request Progress"
+                    class="sapUiSmallMarginBottom"
+                >
+                    <content>
+                        <ProgressIndicator 
+                            id="idProgressBar" 
+                            percentValue="0" 
+                            displayValue="0%: Ready to Submit" 
+                            showValue="true"
+                            state="None"
+                            width="100%"
+                            class="sapUiSmallMargin"
+                        />
+                    </content>
+                </Panel>
+
+                <l:Grid defaultSpan="L12 M12 S12" width="auto" class="sapUiSmallMarginTop">
+                    <l:content>
+                        <Panel
+                            id="idProjectPanel"
+                            headerText="Project Details"
+                            expandable="false"
+                            expanded="true"
+                            class="sapUiResponsiveMargin"
+                            width="auto"
+                        >
+                            <content>
+                                <f:SimpleForm
+                                    id="idProjectForm"
+                                    editable="true"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanXL="4"
+                                    labelSpanL="4"
+                                    labelSpanM="4"
+                                    labelSpanS="12"
+                                    adjustLabelSpan="false"
+                                    emptySpanXL="0"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    emptySpanS="0"
+                                    columnsXL="2"
+                                    columnsL="2"
+                                    columnsM="1"
+                                    singleContainerFullSize="false"
+                                >
+                                    <f:content>
+                                        <core:Title text="Label Information" />
+                                        
+                                        <Label id="idLabelSoftwareLabel" text="Original Label Software" required="true"/>
+                                        <ComboBox id="idLabelSoftware" selectedKey="{viewModel>/labelSoftware}" width="100%" placeholder="Select your current label software...">
+                                            <items>
+                                                <core:Item key="bartender" text="BarTender"/>
+                                                <core:Item key="nicelabel" text="NiceLabel"/>
+                                                <core:Item key="wsw" text="WSW Label"/>
+                                                <core:Item key="others" text="Other Software"/>
+                                            </items>
+                                        </ComboBox>
+                                        <Label 
+                                            id="idOtherSoftwareNameLabel" 
+                                            text="Software Name" 
+                                            visible="{= ${viewModel>/labelSoftware} === 'others' }" 
+                                            required="true"
+                                        />
+                                        <Input 
+                                            id="idOtherSoftwareName" 
+                                            visible="{= ${viewModel>/labelSoftware} === 'others' }" 
+                                            width="100%" 
+                                            placeholder="e.g., MyLabelSoftware"
+                                        />
+                                        <Label 
+                                            id="idOtherSoftwareWebsiteLabel" 
+                                            text="Software Website" 
+                                            visible="{= ${viewModel>/labelSoftware} === 'others' }"
+                                        />
+                                        <Input 
+                                            id="idOtherSoftwareWebsite" 
+                                            visible="{= ${viewModel>/labelSoftware} === 'others' }" 
+                                            width="100%" 
+                                            placeholder="e.g., www.mylabelsoftware.com"
+                                            type="Url"
+                                        />
+                                        
+                                        <Label id="idNumLabelsLabel" text="Number of Labels" required="true"/>
+                                        <Input id="idNumLabels" type="Number" width="100%" value="1"/>
+                                        
+                                        <core:Title text="Contact Information" />
+                                        
+                                        <Label id="idContactNameLabel" text="Full Name" required="true"/>
+                                        <Input id="idContactName" width="100%" placeholder="John Doe"/>
+                                        
+                                        <Label id="idContactMailLabel" text="Email Address" required="true"/>
+                                        <Input id="idContactMail" type="Email" width="100%" placeholder="john.doe@company.com"/>
+                                        
+                                        <Label id="idContactPhoneLabel" text="Phone Number"/>
+                                        <Input id="idContactPhone" type="Tel" width="100%" placeholder="+1 (555) 123-4567"/>
+                                    </f:content>
+                                </f:SimpleForm>
+                            </content>
+                        </Panel>
+                    </l:content>
+
+                    <l:content>
+                        <Panel
+                            id="idServicesPanel"
+                            headerText="Optional Services"
+                            expandable="true"
+                            expanded="true"
+                            class="sapUiResponsiveMargin"
+                            width="auto"
+                        >
+                            <content>
+                                <VBox id="idServicesBox" class="sapUiSmallMargin">
+                                    <CheckBox id="idConversionFonts" text="Font Conversion &amp; Alignment" class="sapUiTinyMarginBottom"/>
+                                    <CheckBox id="idConversionFieldnames" text="Field Name Conversion &amp; Alignment" class="sapUiTinyMarginBottom"/>
+                                    <CheckBox id="idComparisonPrintScan" text="Quality Comparison (Print-out + Scan)" class="sapUiTinyMarginBottom"/>
+                                    <CheckBox id="idSupportADS" text="SAP ADS Print Program Support" class="sapUiTinyMarginBottom"/>
+                                </VBox>
+                            </content>
+                        </Panel>
+                    </l:content>
+
+                    <l:content>
+                        <Panel
+                            id="idUploadPanel"
+                            headerText="Example Files"
+                            expandable="true"
+                            expanded="true"
+                            class="sapUiResponsiveMargin"
+                            width="auto"
+                        >
+                            <infoToolbar>
+                                <Toolbar>
+                                    <Label text="Upload 1-5 example label files (Max 10 MB each)" />
+                                </Toolbar>
+                            </infoToolbar>
+                            <content>
+                                <VBox class="sapUiSmallMargin">
+                                    <u:FileUploader
+                                        id="idFileUploader"
+                                        name="exampleFiles"
+                                        maximumFileSize="10"
+                                        multiple="true"
+                                        sameFilenameAllowed="true"
+                                        fileType="pdf,txt,xlsx,doc,xml,btw,lbl"
+                                        change="onFileChange"
+                                        buttonText="Choose Files"
+                                        width="100%"
+                                        placeholder="No file selected"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+                                    
+                                    <MessageStrip
+                                        id="idUploadInfo"
+                                        text="Supported formats: PDF, TXT, XLSX, DOC, XML, BTW, LBL • Maximum 5 files • 10 MB per file"
+                                        type="Information"
+                                        showIcon="true"
+                                    />
+                                    
+                                    <MessageStrip
+                                        id="idFileWarning"
+                                        text=""
+                                        type="Error"
+                                        showIcon="true"
+                                        visible="false"
+                                        class="sapUiSmallMarginTop"
+                                    />
+                                </VBox>
+                            </content>
+                        </Panel>
+                    </l:content>
+                </l:Grid>
+
+                <Toolbar id="idActionToolbar" class="sapUiMediumMarginTop">
+                    <ToolbarSpacer />
+                    <Button
+                        id="idCancelButton"
+                        text="Cancel"
+                        press="onCancel"
+                        type="Transparent"
+                    />
+                    <Button
+                        id="idSubmitButton"
+                        text="Submit Request"
+                        icon="sap-icon://paper-plane"
+                        type="Emphasized"
+                        press="onSubmitRequest"
+                    />
+                </Toolbar>
+                
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

@@ -1,16 +1,36 @@
 {
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "none",
   "routes": [
     {
-      "source": "^/-/cds/.*",
-      "destination": "mtx-api",
-      "authenticationType": "none"
+      "source": "^/api/(.*)$",
+      "target": "/api/$1",
+      "destination": "srv-api",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/4iot/(.*)$",
+      "target": "/4iot/$1",
+      "destination": "srv-api",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/upload$",
+      "target": "/upload",
+      "destination": "srv-api",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/azure/(.*)$",
+      "target": "/azure/$1",
+      "destination": "srv-api",
+      "csrfProtection": false
     },
     {
       "source": "^/(.*)$",
-      "target": "$1",
-      "destination": "srv-api",
-      "csrfProtection": true
+      "target": "/$1",
+      "localDir": "resources",
+      "authenticationType": "none"
     }
-  ],
-  "welcomeFile": "/labelconversionproject1"
+  ]
 }
